@@ -1,0 +1,189 @@
+from pymongo import MongoClient
+import pprint
+import numpy as np
+import pandas as pd
+
+# Requests sends and recieves HTTP requests.
+import requests
+
+# Beautiful Soup parses HTML documents in python.
+from bs4 import BeautifulSoup, Comment
+import re
+import json
+import time
+
+url = """https://www.pro-football-reference.com/play-index/pgl_finder.cgi?request=1&match=game&year_min=2009&year_max=2019&season_start=1&season_end=-
+1&pos%5B%5D=QB&is_starter=E&game_type=E&career_game_num_min=1&career_game_num_max=400&qb_
+start_num_min=1&qb_start_num_max=400&game_num_min=0&game_num_max=99&week_num_min=0&week_
+num_max=99&c5val=1.0&order_by=pass_td&offset=500
+"""
+r = requests.get(url)
+type(r)
+r.content
+pprint.pprint(r.text)
+
+soup = BeautifulSoup(r.text, 'html.parser')
+
+print(soup.prettify())
+
+
+scraper for the rainy games, file is in the bayes folder in hwsprints
+can be modified for other weather conditions by changing the url
+
+
+url = "http://www.nflweather.com/en/searches/103989"
+r = requests.get(url)
+soup = BeautifulSoup(r.text, features='lxml')
+data = soup.findAll(class_= 'span3 wbkg')
+duplicates = set()
+for i in range(len(data)):
+    date = soup.findAll('div', {'class':'gt-header'})[i].text.strip().split('\n')[0]
+    away_team = soup.findAll('div', {'class':'gt-away'})[i].text.strip().split('\n')[0]
+    away_team_score = soup.findAll('div', {'class':'gt-away'})[i].text.strip().split('\n')[1]
+    home_team = soup.findAll('div', {'class':'gt-home'})[i].text.strip().split('\n')[0]
+    home_team_score = soup.findAll('div', {'class':'gt-home'})[i].text.strip().split('\n')[1]
+    weather = soup.findAll('div', {'class':'gt-weather'})[i].text.strip().split('f')[0]
+    if weather == 'DOME':
+        weather_temp = np.NaN
+        weather_type = 'DOME'
+    else:
+        weather_temp = np.int(weather) if '/' not in weather else np.NaN 
+        weather_type = soup.findAll('div', {'class':'gt-weather'})[i].text.strip().split('f')[1]
+    games = (date, away_team, np.int(away_team_score), home_team, np.int(home_team_score), weather_temp, weather_type)
+    duplicates.add(games)
+game_list = list(duplicates)
+df = pd.DataFrame(game_list, columns=('Date','Away_Team','Away_Team_Score', 'Home_Team', 
+                                      'Home_Team_Score', 'Weather_Temp', 'Weather_Type'))
+
+
+
+<div class="span3 wbkg">
+                <div class="gt-header">
+                <small>	
+           	      &nbsp;Sun 12/29/19 04:25 PM
+          	    </small>
+                <div class="gt-details">                
+          	      <a href="/game/2019/week-17/steelers-at-ravens" class="btn btn-small btn-success move-rigth">Details</a>
+          	    </div>
+              </div>
+                <div class="gt-away">
+          	    <a href="/en/team/Steelers" style="text-decoration: none; color: #454545;"><img alt="Pittsburg_ntc120" src="/system/teams/logos/000/000/014/mini/Pittsburg_NTC120.png?1377268073"></a>
+          	    
+          	    <a href="/en/team/Steelers">Pittsburgh Steelers</a>
+
+		          <strong>10</strong>
+		        </div>
+
+                <div class="gt-home">                
+          	    <a href="/en/team/Ravens" style="text-decoration: none; color: #454545;"><img alt="Baltimore_ntc120" src="/system/teams/logos/000/000/015/mini/Baltimore_NTC120.png?1377268054"></a>
+
+          	    <a href="/en/team/Ravens">Baltimore Ravens</a>
+
+		          <strong>28</strong>
+          	   		        
+		        </div>
+		        
+		        <div class="gt-weather">
+          	    <img alt="Cloudy" src="/assets/weather/small/cloudy.png">
+          	    <small>46f Overcast</small>
+
+                </div>
+
+                <div class="gt-status">
+          	       <strong>Final</strong>
+          	    </div>
+          	   <div class="clearfix"></div>
+          	             	   
+             </div>
+
+
+
+
+
+#as a function that saves the file as a csv
+def web_scrape(url, filename):
+    data = requests.get(url)
+    soup = BeautifulSoup(data.text, features="lxml")
+    team_data = soup.findAll(class_= 'span3 wbkg')
+
+    table_set = set()
+    for i in range(len(team_data)):
+        
+        date = soup.findAll('div', {'class':'gt-header'})[i].text.strip().split('\n')[0]
+        away_team = soup.findAll('div', {'class':'gt-away'})[i].text.strip().split('\n')[0]
+        away_team_score = soup.findAll('div', {'class':'gt-away'})[i].text.strip().split('\n')[1]
+        home_team = soup.findAll('div', {'class':'gt-home'})[i].text.strip().split('\n')[0]
+        home_team_score = soup.findAll('div', {'class':'gt-home'})[i].text.strip().split('\n')[1]
+        weather = soup.findAll('div', {'class':'gt-weather'})[i].text.strip().split('f')[0]
+        if weather == 'DOME':
+            weather_temp = np.NaN
+            weather_type = 'DOME'
+        else:
+            weather_temp = np.int(weather) if '/' not in weather else np.NaN 
+            # There was one game that the weather was recorded as 33/51. Since I could not 
+            #definitively determine the weather and it was only one game with this record,
+            #I decided to record the temp as NaN for that game. 
+            weather_type = soup.findAll('div', {'class':'gt-weather'})[i].text.strip().split('f')[1]
+        game_row = (date, away_team, np.int(away_team_score), home_team, np.int(home_team_score), weather_temp, weather_type)
+        table_set.add(game_row)
+    table_list = list(table_set)
+    df = pd.DataFrame(table_list, columns = ('Date', 'Away_Team', 'Away_Team_Score', 'Home_Team', 'Home_Team_Score', 'Weather_Temp', 'Weather_Type'))
+    df.to_csv(filename)
+    return None
+
+web_scrape(url, 'rain_df')
+
+
+# this is a good example scraper for this site
+
+url_template = "http://www.pro-football-reference.com/years/{year}/draft.htm"
+# for each year from 1950 to 2017
+dataset = []
+for year in range(1950, 2017):
+    df_list = pd.read_html(url_template.replace("{year}",str(year)), skiprows = 0, header=1,  index_col=1)[0]
+    df_list['Draft Year']= year
+    dataset.append(df_list)
+dataset = pd.concat(dataset)
+
+# removing all the multiple headers
+dataset = dataset[dataset.Player != 'Player']
+
+# export to excel
+dataset.to_excel('NFL_Draft_1950_to_2017.xlsx')
+
+
+https://www.pro-football-reference.com/play-index/pgl_finder.cgi request=1&match=game&year_min=2009&year_max=2019&season_start=1&season_end=-1&pos%5B%5D=QB&is_starter=E&game_type=E&career_game_num_min=1&career_game_num_max=400&qb_start_num_min=1&qb_start_num_max=400&game_num_min=0&game_num_max=99&week_num_min=0&week_num_max=99&c5val=1.0&order_by=pass_td&
+
+
+url_template = '''
+https://www.pro-football-reference.com/play-index/pgl_finder.cgi?request=1&match=game&year_min=2009&year_max=2019&season_start=1&season_
+end=-1&pos%5B%5D=QB&is_starter=E&game_type=E&career_game_num_min=1&career_game_num_max=400&qb_start_num_min=1&qb_start_num_max=400&game_
+num_min=0&game_num_max=99&week_num_min=0&week_num_max=99&c5val=1.0&order_by=pass_td&offset=0
+'''
+next url page
+'''
+https://www.pro-football-reference.com/play-index/pgl_finder.cgi?request=1&match=game&year_min=2009&year_max=2019&season_start=1&
+season_end=-1&pos%5B%5D=QB&is_starter=E&game_type=E&career_game_num_min=1&career_game_num_max=400&qb_start_num_min=1&qb_start_num_
+max=400&game_num_min=0&game_num_max=99&week_num_min=0&week_num_max=99&c5val=1.0&order_by=pass_td&offset=100
+'''
+
+each page gives 100 results can append a dataframe with the following
+71 pages of data, from looking at it
+
+
+df1 = pd.read_html(url_template)
+
+
+passing_list = []
+for i in range(0, 7100, 100):
+    url = '''https://www.pro-football-reference.com/play-index/pgl_finder.cgi?request=1&match=game&year_min=2009&year_max=2019&season_start=1&season_end=-1&pos%5B%5D=QB&is_starter=E&game_type=E&career_game_num_min=1&career_game_num_max=400&qb_start_num_min=1&qb_start_num_max=400&game_num_min=0&game_num_max=99&week_num_min=0&week_num_max=99&c1stat=fumbles&c1comp=gt&c5val=1.0&order_by=pass_yds&offset={}'''
+    
+    passing_list.append(pd.read_html(url.format(i))[0])
+
+passing_stats = pd.concat(passing_list)
+
+passing_stats # now you have passing stats in a pandas dataframe
+
+
+
+
