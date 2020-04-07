@@ -184,6 +184,6 @@ passing_stats = pd.concat(passing_list)
 
 passing_stats # now you have passing stats in a pandas dataframe
 
-
+passing_stats.drop(passing_stats[passing_stats['Player'] == 'Player'].index, inplace=True) # drop the extra headers
 
 
