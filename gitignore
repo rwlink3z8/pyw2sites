@@ -194,3 +194,39 @@ https://www.pro-football-reference.com/play-index/tgl_finder.cgi?request=1&match
 
 https://www.pro-football-reference.com/play-index/tgl_finder.cgi?request=1&match=game&year_min=2009&year_max=2019&game_type=R&game_num_min=0&game_num_max=99&week_num_min=0&week_num_max=99&temperature_gtlt=lt&game_location=H&c5val=1.0&order_by=pass_yds&offset=0
 
+
+
+# this should work for cloudy games
+url = 'http://www.nflweather.com/en/searches/104000'
+def web_scrape(url, filename):
+    data = requests.get(url)
+    soup = BeautifulSoup(data.text, features="lxml")
+    team_data = soup.findAll(class_= 'span3 wbkg')
+
+    table_set = set()
+    for i in range(len(team_data)):
+        
+        date = soup.findAll('div', {'class':'gt-header'})[i].text.strip().split('\n')[0]
+        away_team = soup.findAll('div', {'class':'gt-away'})[i].text.strip().split('\n')[0]
+        away_team_score = soup.findAll('div', {'class':'gt-away'})[i].text.strip().split('\n')[1]
+        home_team = soup.findAll('div', {'class':'gt-home'})[i].text.strip().split('\n')[0]
+        home_team_score = soup.findAll('div', {'class':'gt-home'})[i].text.strip().split('\n')[1]
+        weather = soup.findAll('div', {'class':'gt-weather'})[i].text.strip().split('f')[0]
+        if weather == 'DOME':
+            weather_temp = np.NaN
+            weather_type = 'DOME'
+        else:
+            weather_temp = np.int(weather) if '/' not in weather else np.NaN 
+            weather_type = soup.findAll('div', {'class':'gt-weather'})[i].text.strip().split('f')[1]
+        game_row = (date, away_team, np.int(away_team_score), home_team, np.int(home_team_score), weather_temp, weather_type)
+        table_set.add(game_row)
+    table_list = list(table_set)
+    df = pd.DataFrame(table_list, columns = ('Date', 'Away_Team', 'Away_Team_Score', 'Home_Team', 'Home_Team_Score', 'Weather_Temp', 'Weather_Type'))
+    df.to_csv(filename)
+web_scrape(url, 'cloudy_games')
+
+
+# fair weather url all teams http://www.nflweather.com/en/searches/104001
+
+
+# cloudy game url all teams http://www.nflweather.com/en/searches/104000
