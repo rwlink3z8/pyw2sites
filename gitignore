@@ -186,4 +186,11 @@ passing_stats # now you have passing stats in a pandas dataframe
 
 passing_stats.drop(passing_stats[passing_stats['Player'] == 'Player'].index, inplace=True) # drop the extra headers
 
+# scrape the team stats, organized by home team name, should be easier to join tables later
+
+https://www.pro-football-reference.com/play-index/tgl_finder.cgi?request=1&match=game&year_min=2009&year_max=2019&game_type=R&game_num_min=0&game_num_max=99&week_num_min=0&week_num_max=99&temperature_gtlt=lt&game_location=H&c5val=1.0&order_by=pass_yds
+
+https://www.pro-football-reference.com/play-index/tgl_finder.cgi?request=1&match=game&year_min=2009&year_max=2019&game_type=R&game_num_min=0&game_num_max=99&week_num_min=0&week_num_max=99&temperature_gtlt=lt&game_location=H&c5val=1.0&order_by=pass_yds&offset=100
+
+https://www.pro-football-reference.com/play-index/tgl_finder.cgi?request=1&match=game&year_min=2009&year_max=2019&game_type=R&game_num_min=0&game_num_max=99&week_num_min=0&week_num_max=99&temperature_gtlt=lt&game_location=H&c5val=1.0&order_by=pass_yds&offset=0
 
