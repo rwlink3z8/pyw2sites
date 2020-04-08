@@ -259,5 +259,71 @@ def web_scrape(url, filename):
 
 web_scrape('http://www.nflweather.com/en/searches/104018', '2019_nfl_weather.csv')
 
+# passing game stats
+
+passing_games_list = []
+for i in range(0, 1300, 100):
+    url = '''https://www.pro-football-reference.com/play-index/tgl_finder.cgi?request=1&match=game&year_min=2015&year_max=2019&game_type=R&game_num_min=0&game_num_max=99&week_num_min=0&week_num_max=99&temperature_gtlt=lt&game_location=H&c5val=1.0&order_by=pass_yds&offset={}'''
+    
+    passing_games_list.append(pd.read_html(url.format(i), skiprows=0, header=1)[0])
+
+game_stats = pd.concat(passing_games_list)
+
+#clean it up
+game_stats.drop(game_stats[game_stats['Tm'] == 'Tm'].index, inplace=True)
+
+
+#bring in the weather data
+df2019_weather = pd.read_csv('2019_nfl_weather.csv')
+df2018_weather = pd.read_csv('2018_nfl_weather.csv')
+df2017_weather = pd.read_csv('2017_nfl_weather.csv')
+df2016_weather = pd.read_csv('2016_nfl_weather.csv')
+df2015_weather = pd.read_csv('2015_nfl_weather.csv')
+
+
+#clean the date time
+from datetime import datetime
+df2019_weather['Date'] = df2019_weather['Date'].apply(lambda x : 
+                        datetime.strptime(x,'%a %m/%d/%y %I:%M %p').strftime("%Y-%m-%d"))
+df2018_weather['Date'] = df2018_weather['Date'].apply(lambda x : 
+                        datetime.strptime(x,'%a %m/%d/%y %I:%M %p').strftime("%Y-%m-%d"))
+df2017_weather['Date'] = df2017_weather['Date'].apply(lambda x : 
+                        datetime.strptime(x,'%a %m/%d/%y %I:%M %p').strftime("%Y-%m-%d"))
+df2016_weather['Date'] = df2016_weather['Date'].apply(lambda x : 
+                        datetime.strptime(x,'%a %m/%d/%y %I:%M %p').strftime("%Y-%m-%d"))
+df2015_weather['Date'] = df2015_weather['Date'].apply(lambda x : 
+                        datetime.strptime(x,'%a %m/%d/%y %I:%M %p').strftime("%Y-%m-%d"))
+
+
+nfl_dictionary = {'Arizona Cardinals':'ARI', 'Atlanta Falcons':	'ATL', 'Baltimore Ravens': 'BAL',
+                'Buffalo Bills':'BUF', 'Carolina Panthers':	'CAR', 'Chicago Bears':	'CHI',
+                'Cincinnati Bengals':'CIN', 'Cleveland Browns':	'CLE', 'Dallas Cowboys':'DAL',
+                'Denver Broncos': 'DEN', 'Detroit Lions':'DET', 'Green Bay Packers':'GB', 'Houston           Texans':'HOU',
+                'Indianapolis Colts':'IND', 'Jacksonville Jaguars':'JAX', 'Kansas City Chiefs':'KC', 
+                'Miami Dolphins':'MIA', 'Minnesota Vikings':'MIN', 'New England Patriots':'NE', 'New Orleans Saints':'NO',
+                'New York Giants':'NYG', 'New York Jets':'NYJ','Oakland Raiders':'OAK', 'Philadelphia Eagles':'PHI',
+                'Pittsburgh Steelers':'PIT', 'Los Angeles Chargers':'LAC', 'San Francisco 49ers':'SF',
+                'Seattle Seahawks':'SEA', 'Los Angeles Rams':'LAR', 'Tampa Bay Buccaneers':'TB',
+                'Tennessee Titans':'TEN', 'Washington Redskins':'WAS'}
+
+# clean the team names up to match the team codes for the passing game dataframe
+df19 = df2019_weather.replace({'Away_Team':nfl_dictionary})
+df18 = df2018_weather.replace({'Away_Team':nfl_dictionary})
+df17 = df2017_weather.replace({'Away_Team':nfl_dictionary})
+df16 = df2016_weather.replace({'Away_Team':nfl_dictionary})
+df15 = df2015_weather.replace({'Away_Team':nfl_dictionary})
+
+df2019 = df19.replace({'Home_Team':nfl_dictionary})
+df2018 = df18.replace({'Home_Team':nfl_dictionary})
+df2017 = df17.replace({'Home_Team':nfl_dictionary})
+df2016 = df16.replace({'Home_Team':nfl_dictionary})
+df2015 = df15.replace({'Home_Team':nfl_dictionary})
+
+# concatenate all the weather dataframes
+frames = [df2019, df2018, df2017, df2016, df2015]
+result = pd.concat(frames)
+
+
+
 
 
