@@ -259,18 +259,49 @@ def web_scrape(url, filename):
 
 web_scrape('http://www.nflweather.com/en/searches/104018', '2019_nfl_weather.csv')
 
-# passing game stats
+# passing game stats, including playoff games for 5 years 1330 games, superbowls not included :(
 
 passing_games_list = []
-for i in range(0, 1300, 100):
-    url = '''https://www.pro-football-reference.com/play-index/tgl_finder.cgi?request=1&match=game&year_min=2015&year_max=2019&game_type=R&game_num_min=0&game_num_max=99&week_num_min=0&week_num_max=99&temperature_gtlt=lt&game_location=H&c5val=1.0&order_by=pass_yds&offset={}'''
+for i in range(0, 1400, 100):
+    url = '''https://www.pro-football-reference.com/play-index/tgl_finder.cgi?request=1&match=game&year_min=2015&year_max=2019&game_type=E&game_num_min=0&game_num_max=99&week_num_min=0&week_num_max=99&temperature_gtlt=lt&game_location=H&c1stat=pass_yds_combined&c1comp=gte&c5val=1.0&order_by=pass_yds&offset={}'''
     
     passing_games_list.append(pd.read_html(url.format(i), skiprows=0, header=1)[0])
 
+
+
 game_stats = pd.concat(passing_games_list)
+game_stats.shape  # (1383, 29) should be 1330,
 
 #clean it up
 game_stats.drop(game_stats[game_stats['Tm'] == 'Tm'].index, inplace=True)
+game_stats = game_stats.reset_index()
+gs1 = game_stats.replace(to_replace='STL', value='LAR')
+passing_stats = gs1.replace(to_replace='LAC', value='SDG')
+passing_stats # replacing STL and LAC to have 32 teams
+
+#NFL dictionary
+
+nfl_dictionary = {'Arizona Cardinals':'ARI', 'Atlanta Falcons':	'ATL', 'Baltimore Ravens': 'BAL',
+                'Buffalo Bills':'BUF', 'Carolina Panthers':	'CAR', 'Chicago Bears':	'CHI',
+                'Cincinnati Bengals':'CIN', 'Cleveland Browns':	'CLE', 'Dallas Cowboys':'DAL',
+                'Denver Broncos': 'DEN', 'Detroit Lions':'DET', 'Green Bay Packers':'GNB', 'Houston Texans':'HOU',
+                'Indianapolis Colts':'IND', 'Jacksonville Jaguars':'JAX', 'Kansas City Chiefs':'KAN', 
+                'Miami Dolphins':'MIA', 'Minnesota Vikings':'MIN', 'New England Patriots':'NWE', 'New Orleans Saints':'NOR',
+                'New York Giants':'NYG', 'New York Jets':'NYJ','Oakland Raiders':'OAK', 'Philadelphia Eagles':'PHI',
+                'Pittsburgh Steelers':'PIT', 'Los Angeles Chargers':'SDG', 'San Francisco 49ers':'SFO',
+                'Seattle Seahawks':'SEA', 'Los Angeles Rams':'LAR', 'Tampa Bay Buccaneers':'TAM',
+                'Tennessee Titans':'TEN', 'Washington Redskins':'WAS'}
+
+# checks to make sure this dictionary works for passing stats
+
+x = np.sort(passing_stats['Tm'].unique())
+x = list(x)
+x, len(x) #len = 32
+y = sorted(list(nfl_dictionary.values()))
+y, len(y) #len = 32
+
+x == y #True
+
 
 
 #bring in the weather data
@@ -281,49 +312,32 @@ df2016_weather = pd.read_csv('2016_nfl_weather.csv')
 df2015_weather = pd.read_csv('2015_nfl_weather.csv')
 
 
-#clean the date time
-from datetime import datetime
-df2019_weather['Date'] = df2019_weather['Date'].apply(lambda x : 
-                        datetime.strptime(x,'%a %m/%d/%y %I:%M %p').strftime("%Y-%m-%d"))
-df2018_weather['Date'] = df2018_weather['Date'].apply(lambda x : 
-                        datetime.strptime(x,'%a %m/%d/%y %I:%M %p').strftime("%Y-%m-%d"))
-df2017_weather['Date'] = df2017_weather['Date'].apply(lambda x : 
-                        datetime.strptime(x,'%a %m/%d/%y %I:%M %p').strftime("%Y-%m-%d"))
-df2016_weather['Date'] = df2016_weather['Date'].apply(lambda x : 
-                        datetime.strptime(x,'%a %m/%d/%y %I:%M %p').strftime("%Y-%m-%d"))
-df2015_weather['Date'] = df2015_weather['Date'].apply(lambda x : 
-                        datetime.strptime(x,'%a %m/%d/%y %I:%M %p').strftime("%Y-%m-%d"))
-
-
-nfl_dictionary = {'Arizona Cardinals':'ARI', 'Atlanta Falcons':	'ATL', 'Baltimore Ravens': 'BAL',
-                'Buffalo Bills':'BUF', 'Carolina Panthers':	'CAR', 'Chicago Bears':	'CHI',
-                'Cincinnati Bengals':'CIN', 'Cleveland Browns':	'CLE', 'Dallas Cowboys':'DAL',
-                'Denver Broncos': 'DEN', 'Detroit Lions':'DET', 'Green Bay Packers':'GB', 'Houston           Texans':'HOU',
-                'Indianapolis Colts':'IND', 'Jacksonville Jaguars':'JAX', 'Kansas City Chiefs':'KC', 
-                'Miami Dolphins':'MIA', 'Minnesota Vikings':'MIN', 'New England Patriots':'NE', 'New Orleans Saints':'NO',
-                'New York Giants':'NYG', 'New York Jets':'NYJ','Oakland Raiders':'OAK', 'Philadelphia Eagles':'PHI',
-                'Pittsburgh Steelers':'PIT', 'Los Angeles Chargers':'LAC', 'San Francisco 49ers':'SF',
-                'Seattle Seahawks':'SEA', 'Los Angeles Rams':'LAR', 'Tampa Bay Buccaneers':'TB',
-                'Tennessee Titans':'TEN', 'Washington Redskins':'WAS'}
-
-# clean the team names up to match the team codes for the passing game dataframe
-df19 = df2019_weather.replace({'Away_Team':nfl_dictionary})
-df18 = df2018_weather.replace({'Away_Team':nfl_dictionary})
-df17 = df2017_weather.replace({'Away_Team':nfl_dictionary})
-df16 = df2016_weather.replace({'Away_Team':nfl_dictionary})
-df15 = df2015_weather.replace({'Away_Team':nfl_dictionary})
-
-df2019 = df19.replace({'Home_Team':nfl_dictionary})
-df2018 = df18.replace({'Home_Team':nfl_dictionary})
-df2017 = df17.replace({'Home_Team':nfl_dictionary})
-df2016 = df16.replace({'Home_Team':nfl_dictionary})
-df2015 = df15.replace({'Home_Team':nfl_dictionary})
-
-# concatenate all the weather dataframes
-frames = [df2019, df2018, df2017, df2016, df2015]
+#concatenate these dataframes into one
+frames = [df2019_weather, df2018_weather, df2017_weather, df2016_weather, df2015_weather]
 result = pd.concat(frames)
+#check it
+result.shape # (1662, 6) #this includes preseason games
+ 
+
+#clean the date time data to match the format on the passing stats table
+from datetime import datetime
+result['Date'] = result['Date'].apply(lambda x : 
+                datetime.strptime(x,'%a %m/%d/%y %I:%M %p').strftime("%Y-%m-%d"))
 
 
+#clean this data to get the teams to match what they are in the passing stats dataframe
+result = result.reset_index()
+result1 = result.replace({'Away_Team':nfl_dictionary})
+weather_results = result1.replace({'Home_Team':nfl_dictionary})
 
+#clean game stats again so columns match
+game_stats = game_stats.rename(columns={'Tm': 'Home_Team', 'Opp': 'Away_Team'})
+
+# now game stats and weather results data frames have 3 common columns
+
+# merge them 
+
+merged = game_stats.merge(weather_results, 
+                          on=['Home_Team', 'Date', 'Away_Team'], how='left')
 
 
