@@ -340,4 +340,32 @@ game_stats = game_stats.rename(columns={'Tm': 'Home_Team', 'Opp': 'Away_Team'})
 merged = game_stats.merge(weather_results, 
                           on=['Home_Team', 'Date', 'Away_Team'], how='left')
 
+merged = merged.drop(columns=['LTime', 'Unnamed: 6', 'index_y', 'Unnamed: 0'])
+
+merged = merged.rename(columns={'Yds.2': 'Total_Passing_Yards', 
+                                'Yds': 'home_passing_yards'})
+				
+				
+merged['Total_Passing_Yards'] = merged['Total_Passing_Yards'].apply(lambda x: int(x))
+merged['home_passing_yards'] = merged['home_passing_yards'].apply(lambda x: int(x))
+
+merged['Away_passing_yards'] = merged['Total_Passing_Yards'] - merged['home_passing_yards']
+
+merged['Weather_Type'] = merged['Weather_Type'].str.strip()
+
+weather_conditions = {'Clear':'good weather', 'DOME':'Dome', 'Mostly Cloudy': 'good weather', 'Partly Cloudy':'good weather', 
+                        'Overcast': 'good weather', 'Drizzle':'bad weather', 'Light Rain': 'bad weather', 'Rain': 'bad weather', 'Light Snow':'bad weather' , 
+                        'Foggy':'good weather', 'Possible Drizzle':'good weather', 'Humid and Mostly Cloudy': 'good weather', 'Humid and Partly Cloudy':'good weather',
+                        'Snow':'bad weather', 'Heavy Rain':'bad weather', 'Flurries':'bad weather', 'Light Sleet':'bad weather', 'Humid':'good weather',
+                        'Windy and Partly Cloudy':'bad weather', 'Breezy and Humid':'good weather', 'Possible Light Rain': 'good weather', 'Dry and Partly Cloudy':'good weather',
+                        'Humid and Overcast':'good weather', 'unknown':'unknown'}
+
+merged = merged.fillna(value='unknown')	
+merged['weather_conditions'] = merged['Weather_Type'].apply(lambda x:weather_conditions[x])
+good_weather_df = merged[merged['weather_conditions'] == 'good weather']
+dome_df = merged[merged['weather_conditions']=='Dome']
+bad_weather_df = merged[merged['weather_conditions']=='bad weather']
+
+
+
 
