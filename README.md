@@ -67,7 +67,15 @@ Outdoor games vs Inclement Weather outdoor games:
                equal_var=False)
 
 >Ttest_indResult(statistic=3.6988622626104526, pvalue=0.00037641479198078373)
-
+Dome Sample Mean: 
 # Results
 
 We can reject the null hypothesis that inclement weather does not impact the passing game
+
+# future work
+
+I would scrape the weather data differently
+I would look at home and away teams to see if there is an advantage
+
+
+
