@@ -24,4 +24,12 @@ https://www.eldo.co/nfl-rushing-and-passing-in-four-charts.html
 
 # Hypothesis - Bad weather has a negative impact on the passing game
 
+How to test this?
+
+NFL stats can be scraped somewhat painlessly from 
+pro-football-reference.com
+For this capstone weather data was scraped from
+nflweather.com
+
+These dataframes were then merged 
 
