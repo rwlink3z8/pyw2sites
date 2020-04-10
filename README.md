@@ -56,4 +56,11 @@ Dome vs. Outdoor games not considered inclement weather:
 
 > stats.ttest_ind(dome_df['Total_Passing_Yards'],good_weather_df['Total_Passing_Yards'], 
                equal_var=False)
-> Ttest_indResult(statistic=5.589313782574643, pvalue=1.1343400889170831e-07)
+> Ttest_indResult(statistic=3.9128678206247214, pvalue=0.00010978895632510802)
+
+Outdoor games vs Inclement Weather outdoor games:
+
+>stats.ttest_ind(good_weather_df['Total_Passing_Yards'],bad_weather_df['Total_Passing_Yards'], 
+               equal_var=False)
+
+>Ttest_indResult(statistic=3.6988622626104526, pvalue=0.00037641479198078373)
