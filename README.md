@@ -14,7 +14,8 @@ The cost for one - 30 second commercial during the super cost $5.6 million dolla
 # How does weather impact the game?
 
 I believe 
-![offensive trends](data/
+![offensive trends](https://github.com/rwlink3z8/pyw2sites/blob/master/images/eldo5-rushing-and-passing-yards-per-team-game_1.png)
+
 
 from pymongo import MongoClient
 import pprint
