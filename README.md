@@ -8,7 +8,13 @@ Offense attempts to advance the ball by running or passing and the defense attem
 If you or anyone you know is interested in learning more about football feel free to see the following link
 https://en.wikipedia.org/wiki/American_football
 
+Football is the most popular sport in the US, 29 of the 30 most watched television broadcasts in the US were super bowls.
+The cost for one - 30 second commercial during the super cost $5.6 million dollars this past year
 
+# How does weather impact the game?
+
+I believe 
+![offensive trends](data/
 
 from pymongo import MongoClient
 import pprint
