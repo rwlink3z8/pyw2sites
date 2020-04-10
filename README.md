@@ -2,13 +2,16 @@
 
 I chose this topic because it was interesting to me, I played football through college and anecdotally,
 I always believed the greatest impact inclement weather had on the game could be seen in the passing game.
-I find it interesting because the greatest evolution over time has been a fundamental shift towards a pass first offense.
+I find it interesting for two major reasons
+
+1. The greatest evolution over time has been a fundamental shift towards a pass first offense.
 
 ![offensive trends](https://github.com/rwlink3z8/pyw2sites/blob/master/images/eldo5-rushing-and-passing-yards-per-team-game_1.png)
 
 that image came from:
 https://www.eldo.co/nfl-rushing-and-passing-in-four-charts.html
 
+2. The playoffs are in January, this gives 
 
 # Hypothesis - Inclement weather in the form of rain or snow has a negative impact on the passing game
 
@@ -64,3 +67,7 @@ Outdoor games vs Inclement Weather outdoor games:
                equal_var=False)
 
 >Ttest_indResult(statistic=3.6988622626104526, pvalue=0.00037641479198078373)
+
+# Results
+
+We can reject the null hypothesis that inclement weather does not impact the passing game
