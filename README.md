@@ -1,20 +1,8 @@
-# Background - What is Football?
+# Background - Rain and the passing game
 
-This 44 second clip explains football better than I ever could
-https://www.youtube.com/watch?v=nfHOQAT0-Mk
-
-Football is a team sport, 11 players from each team on the field at one time.
-Offense attempts to advance the ball by running or passing and the defense attempts to stop the offense.
-If you or anyone you know is interested in learning more about football feel free to see the following link
-https://en.wikipedia.org/wiki/American_football
-
-Football is the most popular sport in the US, 29 of the 30 most watched television broadcasts in the US were super bowls.
-The cost for one - 30 second commercial during the super cost $5.6 million dollars this past year
-
-# How has the game changed over time?
-
-Bill Walsh revolutionized the game in the late 1970's and 80's by popularizing the west coast offense 
-and prioritizing the short passing game over the running game
+I chose this topic because it was interesting to me, I played football through college and anecdotally,
+I always believed the greatest impact inclement weather had on the game could be seen in the passing game.
+I find it interesting because the greatest evolution over time has been a fundamental shift towards a pass first offense.
 
 ![offensive trends](https://github.com/rwlink3z8/pyw2sites/blob/master/images/eldo5-rushing-and-passing-yards-per-team-game_1.png)
 
@@ -22,9 +10,32 @@ that image came from:
 https://www.eldo.co/nfl-rushing-and-passing-in-four-charts.html
 
 
-# Hypothesis - Bad weather has a negative impact on the passing game
+# Hypothesis - Inclement weather in the form of rain or snow has a negative impact on the passing game
 
 How to test this?
+
+I found the passing statistics from all regular season and post season games on the website:
+https://www.pro-football-reference.com/
+
+and through previous work I linked the game stats with the weather data from the website:
+http://nflweather.com/
+
+# EDA 
+After linking the two dataframes the total games in my dataset were 1330.
+I put weather into 4 categories:
+Bad weather - 75 games fell into this category: the focus here was on rain and snow
+Good weather - 951 games 
+Dome - 238 games fell into this category
+Unknown - 66 games fell into this category, these are largely Chargers and Rams games, I need to go back to my code
+          and see why it did that, I believe it occured when I was cleaning the data due to both teams moving cities
+          
+I compared bad weather conditions first to games played in domes:
+
+![bad weather v dome](https://github.com/rwlink3z8/pyw2sites/blob/master/images/dome%20v%20bad%20weather%20passing%20yard%20comparison.png)
+
+
+
+
 
 NFL stats can be scraped somewhat painlessly from 
 pro-football-reference.com
