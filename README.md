@@ -1,4 +1,13 @@
-# pyw2sites
+#Background - What is Football?
+This 44 second clip explains football better than I ever could
+https://www.youtube.com/watch?v=nfHOQAT0-Mk
+
+Football is a team sport, 11 players from each team on the field at one time.
+Offense attempts to advance the ball by running or passing and the defense attempts to stop the offense.
+If you or anyone you know is interested in learning more about football feel free to see the following link
+https://en.wikipedia.org/wiki/American_football
+
+
 
 from pymongo import MongoClient
 import pprint
