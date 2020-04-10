@@ -40,12 +40,20 @@ I also compared the passing yards for outdoor games in good weather and games pl
 
 ![good weather v dome](https://github.com/rwlink3z8/pyw2sites/blob/master/images/Domes%20and%20Good%20weather%20passing%20yard%20distributions.png)
 
+# Statistical Testing
 
+The null hypothesis is that the sample passing yards from all populations will be the same.
+Alternate hypothesis - mean passing yards from each sample will be different
+Ran Welch's t-tests on the samples due to the large sample sizes and variations in sample sizes
 
-NFL stats can be scraped somewhat painlessly from 
-pro-football-reference.com
-For this capstone weather data was scraped from
-nflweather.com
+Dome vs. Inclement weather:
 
-These dataframes were then merged 
+> stats.ttest_ind(dome_df['Total_Passing_Yards'],bad_weather_df['Total_Passing_Yards'], 
+               equal_var=False)
+> Ttest_indResult(statistic=5.589313782574643, pvalue=1.1343400889170831e-07)
 
+Dome vs. Outdoor games not considered inclement weather:
+
+> stats.ttest_ind(dome_df['Total_Passing_Yards'],good_weather_df['Total_Passing_Yards'], 
+               equal_var=False)
+> Ttest_indResult(statistic=5.589313782574643, pvalue=1.1343400889170831e-07)
