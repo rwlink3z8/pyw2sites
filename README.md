@@ -34,14 +34,14 @@ Unknown - 66 games fell into this category, these are largely Chargers and Rams 
           
 I compared bad weather conditions first to games played in domes:
 
-![bad weather v dome](https://github.com/rwlink3z8/pyw2sites/blob/master/images/dome%20v%20bad%20weather%20passing%20yard%20comparison.png)
+![bad weather v dome](https://github.com/rwlink3z8/pyw2sites/blob/master/images/distplot%20bad%20weather%20vs%20DOME.png)
 
 Next I compared inclement weather conditions to other games played outdoors:
-![bad weather v outside](https://github.com/rwlink3z8/pyw2sites/blob/master/images/Passing%20yard%20distributions%20outdoor%20games%20good%20v%20bad%20weather.png)
+![bad weather v outside](https://github.com/rwlink3z8/pyw2sites/blob/master/images/distplot%20good%20weather%20vs%20bad%20weather.png)
 
 I also compared the passing yards for outdoor games in good weather and games played in domes:
 
-![good weather v dome](https://github.com/rwlink3z8/pyw2sites/blob/master/images/Domes%20and%20Good%20weather%20passing%20yard%20distributions.png)
+![good weather v dome](https://github.com/rwlink3z8/pyw2sites/blob/master/images/distplot%20good%20weather%20vs%20DOME.png)
 
 # Statistical Testing
 
