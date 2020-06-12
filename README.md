@@ -74,13 +74,5 @@ We can reject the null hypothesis that inclement weather does not impact the pas
 
 # future work
 
-I would scrape the weather data differently, directly from nfl.com or profootballarchives.com
-
-I would look at home and away teams to see if there is an advantage
-
-I would look at the running game
-
-I would also like to see if there is a trend of more or less games during inclement weather over time
-
-I ignored temperature and I think that should be considered as well
+I believe future work should focus on more statistics as this project focused on only one. I would like to test, which, if any statistics are indicative of future success.
 
