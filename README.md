@@ -51,23 +51,24 @@ Ran Welch's t-tests on the samples due to the large sample sizes and variations 
 
 Dome vs. Inclement weather:
 
-> stats.ttest_ind(dome_df['Total_Passing_Yards'],bad_weather_df['Total_Passing_Yards'], 
-               equal_var=False)
-> Ttest_indResult(statistic=5.589313782574643, pvalue=1.1343400889170831e-07)
+`stats.ttest_ind(dome_df['Total_Passing_Yards'],bad_weather_df['Total_Passing_Yards'], 
+               equal_var=False)`
+`Ttest_indResult(statistic=5.589313782574643, pvalue=1.1343400889170831e-07)`
 
 Dome vs. Outdoor games not considered inclement weather:
 
-> stats.ttest_ind(dome_df['Total_Passing_Yards'],good_weather_df['Total_Passing_Yards'], 
-               equal_var=False)
-> Ttest_indResult(statistic=3.9128678206247214, pvalue=0.00010978895632510802)
+`stats.ttest_ind(dome_df['Total_Passing_Yards'],good_weather_df['Total_Passing_Yards'], 
+               equal_var=False)`
+`Ttest_indResult(statistic=3.9128678206247214, pvalue=0.00010978895632510802)`
 
 Outdoor games vs Inclement Weather outdoor games:
 
->stats.ttest_ind(good_weather_df['Total_Passing_Yards'],bad_weather_df['Total_Passing_Yards'], 
-               equal_var=False)
+`stats.ttest_ind(good_weather_df['Total_Passing_Yards'],bad_weather_df['Total_Passing_Yards'], 
+               equal_var=False)`
 
->Ttest_indResult(statistic=3.6988622626104526, pvalue=0.00037641479198078373)
-Dome Sample Mean: 
+`Ttest_indResult(statistic=3.6988622626104526, pvalue=0.00037641479198078373)`
+
+
 # Results
 
 We can reject the null hypothesis that inclement weather does not impact the passing game
